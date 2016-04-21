@@ -20,5 +20,5 @@
   },
   "devDependencies": {
     "derby-dev-helpers": "^0.1.1"
-  },
+  }
 }
