@@ -1,3 +1,7 @@
+#options
+options =
+  right: 25
+
 module.exports = class DmDrag
   name: 'dm-drag'
 
@@ -16,6 +20,11 @@ module.exports = class DmDrag
   _focus: (e) ->
 
     mouseY = e.clientY
+    mouseX = e.clientX
+
+    #Calculate
+    return if mouseX > @baseEl.getBoundingClientRect().left + options.right
+
     #Get the moving element and calculated him position in the array
     @currentEl = e.target
     return if @baseEl is @currentEl
