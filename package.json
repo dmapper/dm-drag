@@ -1,0 +1,29 @@
+{
+  "name": "dm-drag",
+  "publishConfig": {
+    "registry": "http://npm.idecisiongames.com/"
+  },
+  "description": "Drag DOM elements",
+  "version": "0.1",
+  "main": "index.js",
+  "engines": {
+    "node": "0.10.x"
+  },
+  "keywords": [
+    "derby",
+    "derbyjs",
+    "dmapper"
+  ],
+  "scripts": {
+    "prepublish": "derby-dev-helpers compile -cj",
+    "postpublish": "derby-dev-helpers revert -cj"
+  },
+  "devDependencies": {
+    "derby-dev-helpers": "^0.1.1"
+  },
+  "gitHead": "48fd208ea79a2c23ea487474249072f7e014b47f",
+  "readme": "ERROR: No README data found!",
+  "_id": "dm-drag@0.1",
+  "_shasum": "322576557c93c5a46553836153abc66d4b9576c9",
+  "_from": "dm-drag@*"
+}
