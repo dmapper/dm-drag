@@ -6,6 +6,7 @@
 Gemfile.lock
 /tmp/
 *.orig
+npm-debug.log
 
 # Bower installation
 /bower_components/
