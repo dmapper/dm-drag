@@ -4,7 +4,7 @@
     "registry": "http://npm.idecisiongames.com/"
   },
   "description": "Drag DOM elements",
-  "version": "0.1",
+  "version": "0.1.0",
   "main": "index.js",
   "engines": {
     "node": "0.10.x"
@@ -21,8 +21,4 @@
   "devDependencies": {
     "derby-dev-helpers": "^0.1.1"
   },
-  "readme": "ERROR: No README data found!",
-  "_id": "dm-drag@0.1",
-  "_shasum": "322576557c93c5a46553836153abc66d4b9576c9",
-  "_from": "dm-drag@*"
 }
