@@ -17,8 +17,5 @@
   "scripts": {
     "prepublish": "derby-dev-helpers compile -cj",
     "postpublish": "derby-dev-helpers revert -cj"
-  },
-  "devDependencies": {
-    "derby-dev-helpers": "^0.1.1"
   }
 }
