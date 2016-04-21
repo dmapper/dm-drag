@@ -3,11 +3,11 @@
   "publishConfig": {
     "registry": "http://npm.idecisiongames.com/"
   },
-  "description": "Drag DOM elements",
-  "version": "0.1.0",
+  "description": "SVG icon component to use with grunt-svgstore builder",
+  "version": "1.0.1",
   "main": "index.js",
   "engines": {
-    "node": "0.10.x"
+    "node": "5.*"
   },
   "keywords": [
     "derby",
@@ -17,5 +17,8 @@
   "scripts": {
     "prepublish": "derby-dev-helpers compile -cj",
     "postpublish": "derby-dev-helpers revert -cj"
+  },
+  "devDependencies": {
+    "derby-dev-helpers": "^0.1.1"
   }
 }
