@@ -40,19 +40,28 @@ module.exports = class DmDrag
     @currentEl.style.top = "#{mouseY - @startY + @currentSpacer}px"
 
     #Add events from mouseup and mousemove
-    @baseEl.addEventListener 'mousemove', @_move, false
+    window.addEventListener 'mousemove', @_move, false
     window.addEventListener 'mouseup', @_drop, false
 
   _move: (e) =>
     event.preventDefault()
     mouseY = e.clientY
     focusEl = e.target.closest(@parentSelector)
+    lastChild = null
+
+    #add new class if user create mousemove event below base element
+    if mouseY > @baseEl.getBoundingClientRect().bottom
+      lastChild = @baseEl.querySelector("#{@parentSelector}:last-child")
+      lastChild.classList.add '-last'
+
     return unless focusEl
     @currentEl.style.top = "#{mouseY - @startY + @currentSpacer}px"
 
+    return if @currentEl in [focusEl, lastChild]
     #Add class for the focuse elements and remove class for the siblings
     for selector in focusEl.parentNode.getElementsByTagName('*')
       selector.classList.remove '-focused'
+      selector.classList.remove '-last'
 
     focusEl.classList.add '-focused'
 
@@ -61,18 +70,35 @@ module.exports = class DmDrag
   _drop: (e) =>
 
     focusEl = e.target.closest(@parentSelector)
-    return unless focusEl
-    #Get the drop element position and put element in drop position
-    focusElPosition = focusEl.dataset.order
-    endElPosition = if @startElPosition < focusElPosition then focusElPosition - 1 else focusElPosition
-    @model.move 'scopeModel', @startElPosition, endElPosition
+
+    topBorder = @baseEl.getBoundingClientRect().top > e.clientY
+    bottomBorder = @baseEl.getBoundingClientRect().bottom < e.clientY
+    endElPosition = false
+
+    #calculated position if user create mouseup event inside base element
+    if focusEl
+      #Get the drop element position and put element in drop position
+      focusElPosition = focusEl.dataset.order
+      endElPosition = if @startElPosition < focusElPosition then focusElPosition - 1 else focusElPosition
+
+    #calculated position if user create mouseup event higher base element
+    endElPosition = 0 if topBorder
+
+    #calculated position if user create mouseup event below base element
+    endElPosition = @model.get('scopeModel').length + 1 if bottomBorder
+
+    #move elements in the model array
+    if endElPosition or endElPosition is 0
+      @model.move 'scopeModel', @startElPosition, endElPosition
 
     #Remove class from the current element
     @currentEl.classList.remove '-moved'
-    for selector in focusEl.parentNode.getElementsByTagName('*')
+    for selector in @baseEl.getElementsByTagName('*')
       selector.classList.remove '-focused'
+      selector.classList.remove '-last'
+
     @currentEl.style.top = ''
 
     #Remove all events
-    @baseEl.removeEventListener 'mousemove', @_move, false
+    window.removeEventListener 'mousemove', @_move, false
     window.removeEventListener 'mouseup', @_drop, false
