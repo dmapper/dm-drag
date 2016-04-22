@@ -12,13 +12,12 @@ module.exports = class DmDrag
     process.nextTick =>
       @_initDrag.apply this, _arguments
 
-  _initDrag: (@baseEl) ->
+  _initDrag: (@baseEl, @parentSelector) ->
 
     return unless @baseEl
     @dom.on 'mousedown', @baseEl, @_focus.bind( @ )
 
   _focus: (e) ->
-
     mouseY = e.clientY
     mouseX = e.clientX
 
@@ -26,8 +25,8 @@ module.exports = class DmDrag
     return if mouseX > @baseEl.getBoundingClientRect().left + options.right
 
     #Get the moving element and calculated him position in the array
-    @currentEl = e.target
-    return if @baseEl is @currentEl
+    @currentEl = e.target.closest(@parentSelector)
+    return if !@currentEl and @baseEl is @currentEl
     @startElPosition = @currentEl.dataset.order
 
     #Add class for the current element
@@ -47,7 +46,8 @@ module.exports = class DmDrag
   _move: (e) =>
     event.preventDefault()
     mouseY = e.clientY
-    focusEl = e.target
+    focusEl = e.target.closest(@parentSelector)
+    return unless focusEl
     @currentEl.style.top = "#{mouseY - @startY + @currentSpacer}px"
 
     #Add class for the focuse elements and remove class for the siblings
@@ -60,9 +60,10 @@ module.exports = class DmDrag
   #current position in array
   _drop: (e) =>
 
-    focusEl = e.target
+    focusEl = e.target.closest(@parentSelector)
+    return unless focusEl
     #Get the drop element position and put element in drop position
-    focusElPosition = e.target.dataset.order
+    focusElPosition = focusEl.dataset.order
     endElPosition = if @startElPosition < focusElPosition then focusElPosition - 1 else focusElPosition
     @model.move 'scopeModel', @startElPosition, endElPosition
 
