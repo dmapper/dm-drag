@@ -85,7 +85,7 @@ module.exports = class DmDrag
     endElPosition = 0 if topBorder
 
     #calculated position if user create mouseup event below base element
-    endElPosition = @model.get('scopeModel').length + 1 if bottomBorder
+    endElPosition = @model.get('scopeModel').length - 1 if bottomBorder
 
     # If value of 'emitter' attribute is truthy emit 'change' event with
     # previous and new position as arguments, otherwise move elements in the
