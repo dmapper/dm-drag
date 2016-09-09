@@ -12,7 +12,7 @@ module.exports = class DmDrag
     process.nextTick =>
       @_initDrag.apply this, _arguments
 
-  _initDrag: (@baseEl, @parentSelector) ->
+  _initDrag: (@baseEl, @parentSelector, @fullWidth) ->
 
     return unless @baseEl
     @dom.on 'mousedown', @baseEl, @_focus.bind( @ )
@@ -21,8 +21,10 @@ module.exports = class DmDrag
     mouseY = e.clientY
     mouseX = e.clientX
 
+    width = @fullWidth and @baseEl.getBoundingClientRect()?.width || options.right
+
     #Calculate
-    return if mouseX > @baseEl.getBoundingClientRect().left + options.right
+    return if mouseX > @baseEl.getBoundingClientRect().left + width
 
     #Get the moving element and calculated him position in the array
     @currentEl = e.target.closest(@parentSelector)
