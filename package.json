@@ -1,8 +1,5 @@
 {
-  "name": "dm-drag",
-  "publishConfig": {
-    "registry": "http://npm.idecisiongames.com/"
-  },
+  "name": "@dmapper/dm-drag",
   "description": "Drag elements",
   "version": "1.1.2",
   "main": "index.js",
