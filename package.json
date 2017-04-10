@@ -3,9 +3,6 @@
   "description": "Drag elements",
   "version": "2.0.0",
   "main": "index.js",
-  "engines": {
-    "node": "5.*"
-  },
   "keywords": [
     "derby",
     "derbyjs",
