@@ -16,77 +16,100 @@ module.exports = class DmDrag
 
     return unless @baseEl
     @dom.on 'mousedown', @baseEl, @_focus.bind( @ )
+    @dom.on 'touchstart', @baseEl, @_focus.bind( @ )
 
   _focus: (e) ->
-    mouseY = e.clientY
-    mouseX = e.clientX
+    { _event, mouseX, mouseY } = @_getEventData e
 
-    width = @fullWidth and @baseEl.getBoundingClientRect()?.width || options.right
+    {
+      width: baseElWidth
+      left: baseElLeft
+    } = @baseEl.getBoundingClientRect() or {}
+    width = @fullWidth and baseElWidth or options.right
 
-    #Calculate
-    return if mouseX > @baseEl.getBoundingClientRect().left + width
+    # Calculate
+    return if mouseX > baseElLeft + baseElWidth
 
-    #Get the moving element and calculated him position in the array
-    @currentEl = e.target.closest(@parentSelector)
+    # Get the moving element and calculate his position in the array
+    @currentEl = _event.target.closest @parentSelector
     return if !@currentEl and @baseEl is @currentEl
     @startElPosition = @currentEl.dataset.order
 
-    #Add class for the current element
+    # Add class for the current element
     @currentEl.classList.add '-moved'
 
-    #Calculated element position relative to the mouse cursor
-    @startY = @currentEl.getBoundingClientRect().top
-    @currentSpacer = @currentEl.getBoundingClientRect().height / 2
+    # Calculated element position relative to the mouse cursor
+    {
+      height: currentElHeight
+      top: currentElTop
+    } = @currentEl.getBoundingClientRect() or {}
+    @startY = currentElTop
+    @currentSpacer = currentElHeight / 2
 
-    #Star move position for the current element
-    @currentEl.style.top = "#{mouseY - @startY + @currentSpacer}px"
+    # Star move position for the current element
+    @currentEl.style.top = "#{ mouseY - @startY + @currentSpacer }px"
 
-    #Add events from mouseup and mousemove
+    # Add listeners for mouseup and mousemove
     window.addEventListener 'mousemove', @_move, false
     window.addEventListener 'mouseup', @_drop, false
 
+    # Add listeners for touchend and touchmove
+    window.addEventListener 'touchmove', @_move, false
+    window.addEventListener 'touchend', @_drop, false
+
   _move: (e) =>
-    event.preventDefault()
-    mouseY = e.clientY
-    focusEl = e.target.closest(@parentSelector)
+    e.preventDefault()
+    { _event, mouseX, mouseY } = @_getEventData e
+
+    focusEl = @_getFocusElement mouseX, mouseY
+
     lastChild = null
 
-    #add new class if user create mousemove event below base element
+    # add new class if user create mousemove event below base element
     if mouseY > @baseEl.getBoundingClientRect().bottom
-      lastChild = @baseEl.querySelector("#{@parentSelector}:last-child")
+      lastChild = @baseEl.querySelector("#{ @parentSelector }:last-child")
       lastChild.classList.add '-last'
 
     return unless focusEl
-    @currentEl.style.top = "#{mouseY - @startY + @currentSpacer}px"
+    @currentEl.style.top = "#{ mouseY - @startY + @currentSpacer }px"
 
     return if @currentEl in [focusEl, lastChild]
-    #Add class for the focuse elements and remove class for the siblings
+    # Add class for the focuse elements and remove class for the siblings
     for selector in focusEl.parentNode.getElementsByTagName('*')
       selector.classList.remove '-focused'
       selector.classList.remove '-last'
 
     focusEl.classList.add '-focused'
 
-  #Function will clear all events if happened the mouseup event and drop element in the
-  #current position in array
+  # Function will clear all events if happened the mouseup event and drop
+  # element in the current position in array
   _drop: (e) =>
+    { _event, mouseX, mouseY } = @_getEventData e
 
-    focusEl = e.target.closest(@parentSelector)
+    focusEl = @_getFocusElement mouseX, mouseY
 
-    topBorder = @baseEl.getBoundingClientRect().top > e.clientY
-    bottomBorder = @baseEl.getBoundingClientRect().bottom < e.clientY
+    {
+      top: baseElTop
+      bottom: baseElBottom
+    } = @baseEl.getBoundingClientRect() or {}
+
+    topBorder = baseElTop > mouseY
+    bottomBorder = baseElBottom < mouseY
     endElPosition = false
 
-    #calculated position if user create mouseup event inside base element
+    # Calculate position if user creates mouseup event inside base element
     if focusEl
-      #Get the drop element position and put element in drop position
+      # Get the drop element position and put element in drop position
       focusElPosition = focusEl.dataset.order
-      endElPosition = if @startElPosition < focusElPosition then focusElPosition - 1 else focusElPosition
+      endElPosition = if @startElPosition < focusElPosition
+        focusElPosition - 1
+      else
+        focusElPosition
 
-    #calculated position if user create mouseup event higher base element
+    # Calculate position if user creates mouseup event above base element
     endElPosition = 0 if topBorder
 
-    #calculated position if user create mouseup event below base element
+    # Calculate position if user creates mouseup event below base element
     endElPosition = @model.get('scopeModel').length - 1 if bottomBorder
 
     # If value of 'emitter' attribute is truthy emit 'change' event with
@@ -98,7 +121,7 @@ module.exports = class DmDrag
       else
         @model.move 'scopeModel', @startElPosition, endElPosition
 
-    #Remove class from the current element
+    # Remove class from the current element
     @currentEl.classList.remove '-moved'
     for selector in @baseEl.getElementsByTagName('*')
       selector.classList.remove '-focused'
@@ -106,6 +129,20 @@ module.exports = class DmDrag
 
     @currentEl.style.top = ''
 
-    #Remove all events
+    # Remove all listeners
     window.removeEventListener 'mousemove', @_move, false
+    window.removeEventListener 'touchmove', @_move, false
     window.removeEventListener 'mouseup', @_drop, false
+    window.removeEventListener 'touchend', @_drop, false
+
+  _getEventData: (e) ->
+    touchEventObj = e.changedTouches?[0]
+    _event = touchEventObj or e
+
+    mouseY = _event.clientY
+    mouseX = _event.clientX
+
+    { _event, mouseX, mouseY }
+
+  _getFocusElement: (mouseX, mouseY) ->
+    document.elementFromPoint(mouseX, mouseY)?.closest @parentSelector
