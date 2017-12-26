@@ -28,7 +28,7 @@ module.exports = class DmDrag
     width = @fullWidth and baseElWidth or options.right
 
     # Calculate
-    return if mouseX > baseElLeft + baseElWidth
+    return if mouseX > baseElLeft + width
 
     # Get the moving element and calculate his position in the array
     @currentEl = _event.target.closest @parentSelector
