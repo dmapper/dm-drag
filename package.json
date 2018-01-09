@@ -1,7 +1,7 @@
 {
   "name": "@dmapper/dm-drag",
   "description": "Drag elements",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "main": "index.js",
   "keywords": [
     "derby",
