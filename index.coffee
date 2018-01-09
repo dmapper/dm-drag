@@ -19,6 +19,7 @@ module.exports = class DmDrag
     @dom.on 'touchstart', @baseEl, @_focus.bind( @ )
 
   _focus: (e) ->
+    e.preventDefault()
     { _event, mouseX, mouseY } = @_getEventData e
 
     {
