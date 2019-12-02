@@ -1,32 +1,35 @@
 #options
-options =
+DEFAULT_OPTIONS =
   right: 25
 
 module.exports = class DmDrag
   name: 'dm-drag'
 
   #Async init function
-  initDrag: ->
-
-    _arguments = arguments
+  initDrag: (options) ->
+    {
+      @baseEl,
+      @parentSelector,
+      @fullWidth,
+      @disablePreventDefaultOnFocus
+    } = options
     process.nextTick =>
-      @_initDrag.apply this, _arguments
+      @_initDrag()
 
-  _initDrag: (@baseEl, @parentSelector, @fullWidth) ->
-
+  _initDrag: ->
     return unless @baseEl
     @dom.on 'mousedown', @baseEl, @_focus.bind( @ )
     @dom.on 'touchstart', @baseEl, @_focus.bind( @ )
 
   _focus: (e) ->
-    e.preventDefault()
+    e.preventDefault() unless @disablePreventDefaultOnFocus
     { _event, mouseX, mouseY } = @_getEventData e
 
     {
       width: baseElWidth
       left: baseElLeft
     } = @baseEl.getBoundingClientRect() or {}
-    width = @fullWidth and baseElWidth or options.right
+    width = @fullWidth and baseElWidth or DEFAULT_OPTIONS.right
 
     # Calculate
     return if mouseX > baseElLeft + width
