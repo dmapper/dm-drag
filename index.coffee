@@ -1,11 +1,11 @@
-#options
+# options
 DEFAULT_OPTIONS =
   right: 25
 
 module.exports = class DmDrag
   name: 'dm-drag'
 
-  #Async init function
+  # Async init function
   initDrag: (options) ->
     {
       @baseEl,

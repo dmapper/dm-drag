@@ -1,18 +1,24 @@
 {
-  "name": "@dmapper/dm-drag",
+  "name": "dm-drag",
+  "version": "1.0.0",
   "description": "Drag elements",
-  "version": "2.1.3",
   "main": "index.js",
-  "keywords": [
-    "derby",
-    "derbyjs",
-    "dmapper"
-  ],
   "scripts": {
-    "//prepublish": "derby-dev-helpers compile -cj",
-    "//postpublish": "derby-dev-helpers revert -cj"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "devDependencies": {
-    "derby-dev-helpers": "^0.1.1"
-  }
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dmapper/dm-drag.git"
+  },
+  "keywords": [
+    "derbyjs",
+    "dmapper",
+    "derby"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/dmapper/dm-drag/issues"
+  },
+  "homepage": "https://github.com/dmapper/dm-drag#readme"
 }
