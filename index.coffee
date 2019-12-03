@@ -2,8 +2,8 @@
 DEFAULT_OPTIONS =
   right: 25
 
-module.exports = class DmDrag
-  name: 'dm-drag'
+module.exports = class DmDraggable
+  name: 'dm-draggable'
 
   # Async init function
   initDrag: (options) ->
